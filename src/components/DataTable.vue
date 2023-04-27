@@ -38,7 +38,7 @@
                         <span class="res-key">{{key}} : </span>{{ value }}
                     </div>
                 </el-card>
-                <el-button icon="el-icon-refresh-right" class="refresh-btn" type="success" @click="getData">Refresh Rank</el-button>
+                <el-button icon="el-icon-refresh-right" class="refresh-btn" type="success" @click="refreshData">Refresh Rank</el-button>
             </el-aside>
             <el-main>
                 <!-- 表格部分 -->
@@ -64,6 +64,7 @@
 import axios from 'axios';
 import "nprogress/nprogress.css";
 import nProgress from "nprogress";
+import requests from "@/api/request";
 
 
 export default {
@@ -78,11 +79,9 @@ export default {
         }
     },
     methods: {
-        async getData() {
-            nProgress.start()
-            let { data: res } = await axios.get('http://172.18.1.35:8000/rank');
+        async refreshData() {
+            let { data: res } = await requests.get("/rank");
             this.competeData = res;
-            nProgress.done()
         },
         submit() {
             console.log(this.formData.name)
@@ -103,14 +102,17 @@ export default {
         },
         submitUpload() {
             if (this.formData1.name === "" || this.fileList.length === 0) {
-                alert("请输入名称和选取文件");
-                return;
+                this.$message({
+                    message: 'please upload file and input your name',
+                    type: 'error',
+                    showClose: true,
+                });
             } else {
                 nProgress.start()
                 let formData = new FormData();
                 formData.append("file", this.fileList[0].raw);
-                axios({
-                    url: "http://172.18.1.35:8000/upload?operated_by=" + this.formData1.name,
+                requests({
+                    url: "/upload?operated_by=" + this.formData1.name,
                     method: "post",
                     data: formData,
                     headers: {
@@ -120,9 +122,18 @@ export default {
                 .then(res => {
                     if (res.status === 200) {
                         this.yourRes = res.data;
-                        alert("导入成功!");
+                        this.$message({
+                            message: 'Upload Success',
+                            type: 'success',
+                            showClose: true,
+                        });
+                        this.refreshData();
                     } else {
-                        alert("导入失败!");
+                        this.$message({
+                            message: 'Upload failed',
+                            type: 'error',
+                            showClose: true,
+                        });
                     }
                     nProgress.done()
                 })
@@ -134,7 +145,7 @@ export default {
         }
     },
     mounted() {
-        this.getData();
+        this.refreshData();
     },
 }
 
