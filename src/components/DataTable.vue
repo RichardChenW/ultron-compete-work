@@ -33,19 +33,17 @@
                     <div slot="header" class="clearfix">
                         <span>Your Competition Result</span>
                     </div>
+                    <div v-if="Object.keys(yourRes).length === 0" style="text-align: center;color:#c1c4ce;">No Data Upload</div>
                     <div v-for="(value,key,i) in yourRes" :key="i" class="res-card">
                         <span class="res-key">{{key}} : </span>{{ value }}
                     </div>
                 </el-card>
-                <div class="rank-btn" @click="getData">
-                    <div>Click to </div>
-                    <div>Check Your Rank</div>
-                </div>
-                <!-- <button  class="rank-btn"></button> -->
+                <el-button icon="el-icon-refresh-right" class="refresh-btn" type="success" @click="getData">Refresh Rank</el-button>
             </el-aside>
             <el-main>
                 <!-- 表格部分 -->
                 <div class="table" >
+                    <h5>Rank Table</h5>
                     <el-table  :data="competeData" border style="width: 100%" stripe size="medium">
                         <el-table-column align="center" type="index"></el-table-column>
                         <el-table-column  align="center" prop="name" label="name" >
@@ -134,8 +132,10 @@ export default {
                 
             }
         }
-    }
-
+    },
+    mounted() {
+        this.getData();
+    },
 }
 
 </script >
@@ -172,7 +172,6 @@ export default {
             font-size: 16px;
             font-weight: 700;
         }
-
         .el-input__inner {
             margin-left: 10px;
             width: calc(320px) !important;
@@ -211,22 +210,6 @@ export default {
             font-weight: 700;
         }
     }
-    .rank-btn{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-        height: 120px;
-        width: 380px;
-        margin: 10px;
-        font-size: 30px;
-        background-color: #ffffff;
-        border-radius: 5px;
-        border: none;
-        &:hover{
-            border: 1px solid black;
-        }
-    }
     .upload-btn{
         display: flex;
         justify-content: center;
@@ -234,6 +217,10 @@ export default {
             margin-top:10px;
             width: 153px;
         }
+    }
+    .refresh-btn{
+        width: 95%;
+        margin: 10px;
     }
 }
 </style>
