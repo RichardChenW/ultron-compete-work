@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # competition
 
 ## Project setup
@@ -20,10 +19,3 @@ yarn build
 ```
 yarn lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-=======
-# ultron-compete-work
-用来查看组内的的模型auc评分
->>>>>>> origin/main
