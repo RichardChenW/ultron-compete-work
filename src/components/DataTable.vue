@@ -63,7 +63,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
+import "nprogress/nprogress.css";
+import nProgress from "nprogress";
 
 
 export default {
@@ -79,8 +81,10 @@ export default {
     },
     methods: {
         async getData() {
+            nProgress.start()
             let { data: res } = await axios.get('http://172.18.1.35:8000/rank');
             this.competeData = res;
+            nProgress.done()
         },
         submit() {
             console.log(this.formData.name)
@@ -104,6 +108,7 @@ export default {
                 alert("请输入名称和选取文件");
                 return;
             } else {
+                nProgress.start()
                 let formData = new FormData();
                 formData.append("file", this.fileList[0].raw);
                 axios({
@@ -114,18 +119,19 @@ export default {
                         "Content-Type": "multipart/form-data;charset=utf-8"
                     }
                 })
-                    .then(res => {
-                        console.log(res)
-                        if (res.status === 200) {
-                            this.yourRes = res.data;
-                            alert("导入成功!");
-                        } else {
-                            alert("导入失败!");
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                .then(res => {
+                    if (res.status === 200) {
+                        this.yourRes = res.data;
+                        alert("导入成功!");
+                    } else {
+                        alert("导入失败!");
+                    }
+                    nProgress.done()
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+                
             }
         }
     }
