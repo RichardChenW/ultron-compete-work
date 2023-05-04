@@ -5,8 +5,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import DataTable from '@/components/DataTable';
 
 export default {

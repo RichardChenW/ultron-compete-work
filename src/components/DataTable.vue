@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+
 import "nprogress/nprogress.css";
 import nProgress from "nprogress";
 import requests from "@/api/request";
@@ -108,7 +108,6 @@ export default {
                     showClose: true,
                 });
             } else {
-                nProgress.start()
                 let formData = new FormData();
                 formData.append("file", this.fileList[0].raw);
                 requests({
@@ -135,7 +134,6 @@ export default {
                             showClose: true,
                         });
                     }
-                    nProgress.done()
                 })
                 .catch(err => {
                     console.log(err);
