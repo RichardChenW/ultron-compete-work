@@ -7,27 +7,24 @@
             <!-- 左边栏 -->
             <el-aside width="400px">
                 <el-card shadow="hover" class="upload-card">
-                    <el-form ref="formData1" :model="formData1">
+                    <el-form :model="uploadForm">
                         <el-form-item label="Your Name :">
-                            <el-input placeholder="Please Input Your Name" v-model="formData1.name"></el-input>
+                            <el-input placeholder="Please Input Your Name" v-model="uploadForm.name"></el-input>
                         </el-form-item>
-                            <el-upload 
-                                class="upload" 
-                                ref="upload" 
-                                action="string" 
-                                :file-list="fileList"
-                                :auto-upload="false" 
-                                :on-change="handleChange" 
-                                :on-preview="handlePreview"
-                                :on-remove="handleRemove" 
-                                multiple="multiple"
-                            >   
-                                <el-button @click="delFile">Select Upload File</el-button>
-                            </el-upload>
+                        <el-upload 
+                            class="upload"
+                            action="string"
+                            :file-list="fileList"
+                            :auto-upload="false" 
+                            :on-change="handleChange"
+                            :show-file-list="true"
+                        >   
+                            <div class="upload-btn">
+                                <el-button @click="delFile" class="upload-btn-select">Select Upload File</el-button>
+                                <el-button @click.stop.prevent="submitUpload" type="danger" class="upload-btn-up">Upload</el-button>
+                            </div>
+                        </el-upload>
                     </el-form>
-                    <div class="upload-btn">
-                        <el-button @click="submitUpload" type="danger">Upload</el-button>
-                    </div>
                 </el-card>
                 <el-card class="box-card" shadow="hover">
                     <div slot="header" class="clearfix">
@@ -72,7 +69,7 @@ export default {
     data() {
         return {
             competeData: [],
-            formData1: { name: '' },
+            uploadForm: { name: '' },
             formData: "",
             fileList: [],
             yourRes: {}
@@ -83,10 +80,6 @@ export default {
             let { data: res } = await requests.get("/rank");
             this.competeData = res;
         },
-        submit() {
-            console.log(this.formData.name)
-        },
-
         delFile() {
             this.fileList = [];
         },
@@ -94,14 +87,8 @@ export default {
             this.fileList = fileList;
         },
 
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePreview(file) {
-            console.log(file);
-        },
         submitUpload() {
-            if (this.formData1.name === "" || this.fileList.length === 0) {
+            if (this.uploadForm.name === "" || this.fileList.length === 0) {
                 this.$message({
                     message: 'please upload file and input your name',
                     type: 'error',
@@ -111,12 +98,9 @@ export default {
                 let formData = new FormData();
                 formData.append("file", this.fileList[0].raw);
                 requests({
-                    url: "/upload?operated_by=" + this.formData1.name,
+                    url: "/upload?operated_by=" + this.uploadForm.name,
                     method: "post",
-                    data: formData,
-                    headers: {
-                        "Content-Type": "multipart/form-data;charset=utf-8"
-                    }
+                    data: formData
                 })
                 .then(res => {
                     if (res.status === 200) {
@@ -195,8 +179,7 @@ export default {
         }
         .upload{
             display: flex;
-            flex-direction: row;
-            justify-content: center;
+            justify-content: space-between;
             .el-button--default{
                 &:hover{
                     // background-color: #000000;
@@ -211,20 +194,27 @@ export default {
                     background-color: #ffffff!important;
                 }
             }
+            .upload-btn {
+                margin-left: 10px;
+                display: flex;
+                flex-direction: column;
+
+                .upload-btn-up {
+                    margin-top: 10px;
+                    margin-left: 0px;
+                }
+            }
+            .el-upload-list{
+                margin-top: 0px !important;
+                width: 100%;
+                margin: 10px;
+            }
         }
     }
     .res-card{
         margin: 10px;
         .res-key{
             font-weight: 700;
-        }
-    }
-    .upload-btn{
-        display: flex;
-        justify-content: center;
-        .el-button--danger{
-            margin-top:10px;
-            width: 153px;
         }
     }
     .refresh-btn{

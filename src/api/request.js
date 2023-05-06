@@ -5,30 +5,40 @@ import 'nprogress/nprogress.css';
 
 // 创建axios实例
 const requests = axios.create({
-    baseURL:"http://172.18.1.35:8000",
+    baseURL: "http://172.18.1.35:8000",
     timeout: 10000,
+    // headers: {"User-Agent": "multipart/form-data;charset=utf-8"}
+    // headers:{"Authorization":"Bearer token"}
 });
 
 // 请求拦截器
-requests.interceptors.request.use((config)=>{
+requests.interceptors.request.use((config) => {
     nProgress.start();
     return config;
 });
 
-// 响应拦截器
+// 请求拦截器
+requests.interceptors.request.use(
+    function (config) {
+        nProgress.start();
+        return config;
+    },
+    function (error) {
+        nProgress.done();
+        return Promise.reject(error);
+    });
+
+
+// 添加响应拦截器
 requests.interceptors.response.use(
-    
-    // 成功的回调
-    (response)=>{
+    function (response) {
         nProgress.done();
         return response;
-    },
-    // 失败的回调
-    (error)=>{
+    }, 
+    function (error) {
         nProgress.done();
-        return error; //? 这里返回error会怎么样？
-    },
-);
+        return Promise.reject(error);
+    });
 
 export default requests;
 
