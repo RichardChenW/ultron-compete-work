@@ -41,7 +41,7 @@
                 <!-- 表格部分 -->
                 <div class="table" >
                     <h5>Rank Table</h5>
-                    <el-table  :data="competeData" border style="width: 100%" stripe size="medium">
+                    <el-table  :data="competeData" border style="width: 100%" stripe size="medium" :cell-class-name="rankStyle" :cell-style="champRow"	>
                         <el-table-column align="center" type="index"></el-table-column>
                         <el-table-column  align="center" prop="name" label="name" >
                         </el-table-column>
@@ -124,6 +124,23 @@ export default {
                 });
                 
             }
+        },
+        rankStyle({row,column,rowIndex,columnIndex}){
+            if (rowIndex === 0 && columnIndex === 1) {
+                return 'champion-row';
+            }else if (rowIndex === 1 && columnIndex === 1){
+                return "second-place-row"
+            }else if (rowIndex === 2 && columnIndex === 1){
+                return "third-place-row"
+            };
+        },
+        champRow({row, column, rowIndex, columnIndex}){
+            if(rowIndex === 0){
+                return {
+                    borderTop:'2px solid #ffb02e',
+                    borderBottom:'2px solid #ffb02e',
+                }
+            }
         }
     },
     mounted() {
@@ -133,7 +150,7 @@ export default {
 
 </script >
 
-<style lang="scss">
+<style lang="scss" scoped>
 .page-container {
     .header {
         //文字居中
@@ -220,6 +237,34 @@ export default {
     .refresh-btn{
         width: 95%;
         margin: 10px;
+    }
+}
+::v-deep .champion-row {
+    .cell{
+        &::after{
+            content: "🏆";
+            font-size: 24px;
+            vertical-align: middle;
+        }
+    }
+}
+::v-deep .second-place-row {
+    .cell {
+        &::after{
+            content: "🥈";
+            font-size: 24px;
+            vertical-align: middle;
+        }
+    }
+}
+
+::v-deep .third-place-row{
+    .cell {
+        &::after{
+            content: "🥉";
+            font-size: 24px;
+            vertical-align: middle;
+        }
     }
 }
 </style>
